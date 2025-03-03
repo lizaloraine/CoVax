@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - CoVax</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <h2>CoVax</h2>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('appointment') }}">Appointment</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Welcome, {{ user }}!</h1>
+            <img src="{{ url_for('static', filename='images/banner.jpg') }}" alt="Vaccine Banner" class="banner">
+        </div>
+    </div>
+
+</body>
+</html>

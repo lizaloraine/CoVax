@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - CoVax</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function switchTab(tab) {
+            if (tab === 'patient') {
+                document.getElementById("patient-form").style.display = "block";
+                document.getElementById("provider-form").style.display = "none";
+                document.getElementById("patient-tab").classList.add("active");
+                document.getElementById("provider-tab").classList.remove("active");
+            } else {
+                document.getElementById("patient-form").style.display = "none";
+                document.getElementById("provider-form").style.display = "block";
+                document.getElementById("patient-tab").classList.remove("active");
+                document.getElementById("provider-tab").classList.add("active");
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <div class="tabs">
+            <button id="patient-tab" class="tab active" onclick="switchTab('patient')">Patient</button>
+            <button id="provider-tab" class="tab" onclick="switchTab('provider')">Healthcare Provider</button>
+        </div>
+
+        <!-- Patient Registration Form -->
+        <form id="patient-form" method="POST" onsubmit="redirectToLogin(event)">
+            <h2>Patient Registration</h2>
+            <input type="text" name="full_name" placeholder="Full Name" required>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="tel" name="phone" placeholder="Phone Number" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <label>Gender:</label>
+            <div class="gender">
+                <label><input type="radio" name="gender" value="Male"> Male</label>
+                <label><input type="radio" name="gender" value="Female"> Female</label>
+                <label><input type="radio" name="gender" value="Prefer not to say"> Prefer not to say</label>
+            </div>
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+
+        <!-- Healthcare Provider Registration Form -->
+        <form id="provider-form" method="POST" onsubmit="redirectToLogin(event)" style="display: none;">
+            <h2>Healthcare Provider Registration</h2>
+            <input type="text" name="full_name" placeholder="Full Name" required>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="tel" name="phone" placeholder="Phone Number" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <input type="text" name="license_no" placeholder="License Number" required>
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+    </div>
+
+</body>
+<script>
+    function redirectToLogin(event) {
+        event.preventDefault(); // Prevent form submission (since there's no database)
+        alert("Registration successful! Redirecting to login...");
+        window.location.href = "{{ url_for('login') }}";
+    }
+</script>
+</html>
