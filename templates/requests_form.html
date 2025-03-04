@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Requests - CoVax</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/requests_form.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button class="back-home-btn" onclick="window.location.href='/'"  fdprocessedid="1ndduw"><i class="fas fa-arrow-left"></i></button>
+    <div class="container">
+        <div class="form-container">            
+            <form id="manageRequestsForm">
+                <div class="form-step" id="request-form">
+                    <h2>Manage Requests</h2>
+                    <p class="step-description">Check appointment status or cancel an appointment.</p>
+
+                    <div class="form-group">
+                        <label for="ref-no">Appointment Reference No.:</label>
+                        <input type="text" id="ref-no" name="ref-no" placeholder="Enter your reference number" required>
+                        <span id="ref-no-feedback" class="feedback"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="verification-code">Verification code:</label>
+                        <div class="verification-container">
+                            <input type="text" id="verification-code" name="verification-code" placeholder="Verify to cancel">
+                            <button type="button" id="send-code-btn">Send Code</button>
+                        </div>
+                        <span id="verification-feedback" class="feedback"></span>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" class="status-btn" id="check-status-btn">Check Status</button>
+                        <button type="button" class="request-btn" id="cancel-request-btn">Request Cancellation</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="detailsModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2 id="modal-title"></h2>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/requests_form.js') }}"></script>
+</body>
+</html>
