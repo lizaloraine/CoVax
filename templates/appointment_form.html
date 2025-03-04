@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - CoVax</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/appointment_form.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>Book Your Vaccination Appointment</h1>
+            
+            <div class="progress-bar">
+                <div class="step active">Personal Info</div>
+                <div class="step">Location & Vaccine</div>
+                <div class="step">Schedule</div>
+                <div class="step">Confirm</div>
+            </div>
+
+            <form id="appointmentForm">
+                <!-- Step 1: Personal Information -->
+                <div class="form-step" id="step-1">
+                    <h2>Personal Information</h2>
+                    <p class="step-description">Let's start with your basic details. This helps us confirm your appointment.</p>
+                    
+                    <div class="form-group">
+                        <label>Full Name:</label>
+                        <input type="text" name="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Number:</label>
+                        <input type="tel" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address:</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="next-btn" onclick="nextStep(1)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Vaccination Center & Type -->
+                <div class="form-step" id="step-2" style="display: none;">
+                    <h2>Select Vaccination Center & Vaccine Type</h2>
+                    <p class="step-description">Choose where you'd like to get vaccinated and the type of vaccine.</p>
+                    
+                    <div class="form-group">
+                        <label>Vaccination Center:</label>
+                        <select name="center" required>
+                            <option value="">Select Center</option>
+                            <option>City General Hospital</option>
+                            <option>Community Health Center</option>
+                            <option>Downtown Medical Plaza</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Vaccine Type:</label>
+                        <select name="vaccineType" required>
+                            <option value="">Select Vaccine</option>
+                            <option>Pfizer-BioNTech</option>
+                            <option>Moderna</option>
+                            <option>Johnson & Johnson's Janssen</option>
+                            <option>Oxford/AstraZeneca</option>
+                            <option>Sinovac</option>
+                            <option>Novavax</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="back-btn" onclick="prevStep(2)">Back</button>
+                        <button type="button" class="next-btn" onclick="nextStep(2)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Date & Time Selection -->
+                <div class="form-step" id="step-3" style="display: none;">
+                    <h2>Select Date & Time</h2>
+                    <p class="step-description">Pick a date and time that works best for you. Only available slots will be shown.</p>
+                    
+                    <div class="form-group">
+                        <label>Preferred Date:</label>
+                        <input type="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Time Slot:</label>
+                        <select name="timeSlot" required>
+                            <option value="">Select Time</option>
+                            <option>09:00 AM</option>
+                            <option>10:00 AM</option>
+                            <option>11:00 AM</option>
+                            <option>02:00 PM</option>
+                            <option>03:00 PM</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="back-btn" onclick="prevStep(3)">Back</button>
+                        <button type="button" class="next-btn" onclick="nextStep(3)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review & Confirm -->
+                <div class="form-step" id="step-4" style="display: none;">
+                    <h2>Review & Confirm</h2>
+                    <p class="step-description">Almost done! Please review your details and confirm your appointment.</p>
+                    
+                    <div class="review-section">
+                        <h3>Appointment Details</h3>
+                        <div id="review-details">
+                            <!-- Will be filled by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="consent-section">
+                        <h3>Consent & Agreement</h3>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" required>
+                                I confirm that the information provided is correct.
+                            </label>
+                            <label>
+                                <input type="checkbox">
+                                I agree to receive appointment reminders via SMS or email.
+                            </label>
+                            <label>
+                                <input type="checkbox" required>
+                                I understand that rescheduling or cancellation must be done at least 24 hours in advance.
+                            </label>
+                            <label>
+                                <input type="checkbox" required>
+                                I acknowledge that I must bring a valid ID on the day of vaccination.
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="back-btn" onclick="prevStep(4)">Back</button>
+                        <button type="submit" class="submit-btn">Confirm Appointment</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Success Modal -->
+        <div id="successModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeSuccessModal()">&times;</span>
+                <h2>Appointment Confirmed!</h2>
+                <div id="confirmation-details">
+                    <!-- Will be filled by JavaScript -->
+                </div>
+                <div class="button-group">
+                    <button onclick="downloadConfirmation()" class="download-btn">Download Confirmation</button>
+                    <button onclick="printConfirmation()" class="print-btn">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/appointment_form.js') }}"></script>
+</body>
+</html>

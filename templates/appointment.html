@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointments - CoVax</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/appointment.css') }}">
-    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
 <body>
 
@@ -24,7 +23,6 @@
         <div class="main-content">
             <div class="header">
                 <h1>Appointments</h1>
-                <button class="add-btn" onclick="openModal()">+</button>
             </div>
 
             <table>
@@ -37,62 +35,24 @@
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
+                {% for appointment in appointments %}
                 <tr>
-                    <td>Data 1</td>
-                    <td>Data 2</td>
-                    <td>Data 3</td>
-                    <td>Data 4</td>
-                    <td>Data 5</td>
-                    <td>Data 6</td>
-                    <td>Data 7</td>
+                    <td>{{ appointment.appointment_no }}</td>
+                    <td>{{ appointment.patient_name }}</td>
+                    <td>{{ appointment.vaccine_type }}</td>
+                    <td>{{ appointment.date }}</td>
+                    <td>{{ appointment.time }}</td>
+                    <td>
+                        <span class="status-badge {{ appointment.status.lower() }}">
+                            {{ appointment.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn" onclick="viewDetails('{{ appointment.appointment_no }}')">View</button>
+                    </td>
                 </tr>
+                {% endfor %}
             </table>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div id="appointmentModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Add an Appointment</h2>
-            <div class="steps">
-                <span id="step1" class="step active">1</span>
-                <span id="step2" class="step">2</span>
-                <span id="step3" class="step">3</span>
-            </div>
-
-            <form id="appointmentForm">
-                <!-- Step 1: Personal Information -->
-                <div class="form-step" id="step-1">
-                    <label>Full Name:</label>
-                    <input type="text" required>
-                    <label>Phone Number:</label>
-                    <input type="tel" required>
-                    <button type="button" onclick="nextStep(1)">Next</button>
-                </div>
-
-                <!-- Step 2: Vaccine Type/History -->
-                <div class="form-step" id="step-2" style="display: none;">
-                    <label>Vaccine Type:</label>
-                    <select required>
-                        <option>Pfizer</option>
-                        <option>Moderna</option>
-                        <option>Johnson & Johnson</option>
-                    </select>
-                    <label>Previous Doses:</label>
-                    <input type="number" required>
-                    <button type="button" onclick="prevStep(2)">Back</button>
-                    <button type="button" onclick="nextStep(2)">Next</button>
-                </div>
-
-                <!-- Step 3: Confirmation -->
-                <div class="form-step" id="step-3" style="display: none;">
-                    <p>Confirm your appointment details:</p>
-                    <p><strong>Date & Time:</strong> <input type="datetime-local" required></p>
-                    <button type="button" onclick="prevStep(3)">Back</button>
-                    <button type="submit">Confirm</button>
-                </div>
-            </form>
         </div>
     </div>
 

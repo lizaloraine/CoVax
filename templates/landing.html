@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoVax - COVID-19 Vaccination System</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
 </head>
 <body>
 
@@ -25,7 +25,7 @@
         <h1>Get Vaccinated, Stay Protected</h1>
         <p>Easy online scheduling for COVID-19 vaccinations. Book your appointment today.</p>
         <div class="buttons">
-            <a href="{{ url_for('register') }}" class="btn primary">Register an account</a>
+            <a href="{{ url_for('new_appointment') }}" class="btn primary">Book an Appointment</a>
             <a href="#" class="btn secondary">Learn More</a>
         </div>
     </section>
