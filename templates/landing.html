@@ -6,43 +6,110 @@
     <title>CoVax - COVID-19 Vaccination System</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />   
     <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
 <body>
-
     <!-- Navigation Bar -->
-    <button id="open-sidebar" onclick="toggleSidebar()">
-        <span class="material-symbols-rounded">menu</span>
-    </button>
-
-    <div class="logo-mobile">CoVax</div>
-    
     <nav id="navbar">
-        <div class="logo">CoVax</div>
+        <div class="logo"><span>CoVax</span></div>
         <ul class="nav-links">
-            <li>
-                <button id="close-sidebar" onclick="toggleSidebar()"><span class="material-symbols-rounded">close</span></button>
-            </li>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#why-vaccinate">Why Vaccinate</a></li>
+            <li><a href="#contact">Contact</a></li>
         </ul>
         <ul class="nav-login-right">
-            <li><a href="{{ url_for('login') }}" class="login-btn">Login</a></li>
+            {% if is_logged_in %}
+                <li><span class="welcome-text">Welcome, Dr. {{ user }}</span></li>
+                <li><a href="{{ url_for('home') }}" class="dashboard-btn">Dashboard</a></li>
+                <li><a href="{{ url_for('logout') }}" class="logout-btn">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}" class="login-btn">Healthcare Worker Login</a></li>
+            {% endif %}
         </ul>
-        
     </nav>
 
+    <div class="logo-mobile"><span>CoVax</span></div>
+
     <!-- Hero Section -->
-    <section class="hero">
-        <h1>Get Vaccinated, Stay Protected</h1>
-        <p>Easy online scheduling for COVID-19 vaccinations. Book your appointment today.</p>
-        <div class="buttons">
-            <a href="{{ url_for('new_appointment') }}" class="btn primary">Book an Appointment</a>
-            <a href="{{ url_for('manage_requests') }}" class="btn secondary">Manage Requests</a>
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Get Vaccinated, Stay Protected!</h1>
+                <p>Book your COVID-19 vaccination appointment in just 4 simple steps.</p>
+                <div class="buttons">
+                    <a href="{{ url_for('new_appointment') }}" class="btn primary">
+                        <span class="material-symbols-rounded">event</span>
+                        Book an Appointment
+                    </a>
+                    <a href="{{ url_for('manage_requests') }}" class="btn secondary">
+                        <span class="material-symbols-rounded">schedule</span>
+                        Check Appointment Status
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="{{ url_for('static', filename='images/vaccination-hero.svg') }}" alt="Vaccination Illustration">
+            </div>
         </div>
     </section>
 
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <h2>How to Book Your Appointment</h2>
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-icon">
+                    <span class="material-symbols-rounded">person</span>
+                </div>
+                <h3>Personal Information</h3>
+                <p>Provide your name, contact details, and basic information.</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">
+                    <span class="material-symbols-rounded">vaccines</span>
+                </div>
+                <h3>Vaccine & Medical History</h3>
+                <p>Answer a few health questions to determine your eligibility.</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">
+                    <span class="material-symbols-rounded">calendar_month</span>
+                </div>
+                <h3>Schedule Your Appointment</h3>
+                <p>Select a date, time, and location that works best for you.</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">
+                    <span class="material-symbols-rounded">task_alt</span>
+                </div>
+                <h3>Confirm & Submit</h3>
+                <p>Review your details and receive a confirmation for your booking.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Get Vaccinated Section -->
+    <section class="why-vaccinate" id="why-vaccinate">
+        <h2>Why Get Vaccinated?</h2>
+        <div class="benefits-container">
+            <div class="benefit">
+                <span class="material-symbols-rounded">health_and_safety</span>
+                <h3>Protect Your Loved Ones</h3>
+                <p>Protect yourself and your loved ones from COVID-19.</p>
+            </div>
+            <div class="benefit">
+                <span class="material-symbols-rounded">schedule</span>
+                <h3>Fast & Easy Booking</h3>
+                <p>Fast, easy, and secure online scheduling.</p>
+            </div>
+            <div class="benefit">
+                <span class="material-symbols-rounded">verified_user</span>
+                <h3>Trusted Service</h3>
+                <p>Trusted by thousands of users and healthcare professionals.</p>
+            </div>
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

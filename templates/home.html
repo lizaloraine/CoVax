@@ -3,28 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - CoVax</title>
+    <title>Admin Dashboard - CoVax</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-
     <div class="container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <h2>CoVax</h2>
-            <ul>
-                <li><a href="{{ url_for('home') }}">Home</a></li>
-                <li><a href="{{ url_for('appointment') }}">Appointment</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        <!-- Replace sidebar with navbar -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="{{ url_for('landing') }}">
+                    <h2>CoVax</h2>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('appointment') }}"><i class="fas fa-calendar"></i> Appointments</a></li>
+                <li><a href="{{ url_for('logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Update main content margin -->
         <div class="main-content">
-            <h1>Welcome, {{ user }}!</h1>
-            <img src="{{ url_for('static', filename='images/banner.jpg') }}" alt="Vaccine Banner" class="banner">
+            <header>
+                <h1>Welcome, Dr. {{ user }}!</h1>
+                <p class="date">{{ current_date }}</p>
+            </header>
+
+            <!-- Overview Cards -->
+            <div class="stats-grid">
+                <div class="stat-card total">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="stat-info">
+                        <h3>Total Appointments</h3>
+                        <p>{{ stats.total }}</p>
+                    </div>
+                </div>
+                <div class="stat-card pending">
+                    <i class="fas fa-clock"></i>
+                    <div class="stat-info">
+                        <h3>Pending</h3>
+                        <p>{{ stats.pending }}</p>
+                    </div>
+                </div>
+                <div class="stat-card confirmed">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="stat-info">
+                        <h3>Confirmed</h3>
+                        <p>{{ stats.confirmed }}</p>
+                    </div>
+                </div>
+                <div class="stat-card cancelled">
+                    <i class="fas fa-times-circle"></i>
+                    <div class="stat-info">
+                        <h3>Cancelled</h3>
+                        <p>{{ stats.cancelled }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Weekly Appointment Trends</h3>
+                    <canvas id="appointmentTrends"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Vaccine Distribution</h3>
+                    <canvas id="vaccineDistribution"></canvas>
+                </div>
+            </div>
+            <!-- Remove recent-appointments section -->
         </div>
     </div>
+    <!-- Chart.js initialization -->
+    <script>
+        // Sample data - Replace with actual data from your backend
+        const appointmentData = {
+            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+            datasets: [{
+                label: 'Number of Appointments',
+                data: [12, 19, 15, 17, 14, 8, 5],
+                backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                borderRadius: 5
+            }]
+        };
 
+        const vaccineData = {
+            labels: ['Pfizer', 'Moderna', 'Johnson & Johnson', 'Others'],
+            datasets: [{
+                data: [45, 35, 15, 5],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(255, 159, 64, 0.8)',
+                    'rgba(153, 102, 255, 0.8)'
+                ]
+            }]
+        };
+
+        // Chart configurations
+        const trendsConfig = {
+            type: 'bar',
+            data: appointmentData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Appointments This Week'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 5
+                        }
+                    }
+                }
+            }
+        };
+
+        const distributionConfig = {
+            type: 'doughnut',
+            data: vaccineData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Vaccine Type Distribution'
+                    }
+                },
+                cutout: '60%'
+            }
+        };
+
+        // Initialize charts
+        window.addEventListener('load', function() {
+            const trendsChart = new Chart(
+                document.getElementById('appointmentTrends'),
+                trendsConfig
+            );
+
+            const distributionChart = new Chart(
+                document.getElementById('vaccineDistribution'),
+                distributionConfig
+            );
+        });
+    </script>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
 </html>

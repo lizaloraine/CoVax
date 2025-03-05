@@ -17,6 +17,7 @@ body {
     max-width: 400px;
     position: relative;
     overflow: hidden;
+    margin-top: 60px; /* Add margin-top */
 }
 
 .login-container::before {
@@ -165,4 +166,47 @@ body {
     background: #2c3e50;
     color: white;
     transform: scale(1.1);
+}
+
+/* Password Input Group */
+.password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input input {
+    padding-right: 40px; /* Space for the icon */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: #2c3e50;
+}
+
+/* Forgot Password Link */
+.forgot-password {
+    text-align: right;
+    margin: -10px 0 20px;
+}
+
+.forgot-password a {
+    color: #6c757d;
+    font-size: 0.9em;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.forgot-password a:hover {
+    color: #28a745;
+    text-decoration: underline;
 }

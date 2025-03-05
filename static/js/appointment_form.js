@@ -1,6 +1,6 @@
 function validateStep(stepNumber) {
     const currentStep = document.getElementById(`step-${stepNumber}`);
-    const inputs = currentStep.querySelectorAll('input[required], select[required]');
+    const inputs = currentStep.querySelectorAll('input[required], select[required], textarea[required]');
     let isValid = true;
     
     // Remove existing error messages
@@ -17,6 +17,22 @@ function validateStep(stepNumber) {
             errorMsg.className = 'error-message';
             errorMsg.textContent = 'This field is required';
             input.parentNode.appendChild(errorMsg);
+        }
+
+        // Special validation for radio button groups
+        if (input.type === 'radio' && input.required) {
+            const groupName = input.name;
+            const checkedRadio = currentStep.querySelector(`input[name="${groupName}"]:checked`);
+            if (!checkedRadio) {
+                isValid = false;
+                const container = input.closest('.radio-group');
+                if (!container.querySelector('.error-message')) {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'error-message';
+                    errorMsg.textContent = 'Please select an option';
+                    container.appendChild(errorMsg);
+                }
+            }
         }
     });
     
@@ -72,24 +88,33 @@ function prevStep(current) {
 
 function updateReviewDetails() {
     const form = document.getElementById('appointmentForm');
-    const details = {
-        fullName: form.fullName.value,
-        phone: form.phone.value,
-        email: form.email.value,
-        center: form.center.value,
-        vaccineType: form.vaccineType.value,
-        date: form.date.value,
-        timeSlot: form.timeSlot.value
-    };
-
     const reviewHtml = `
-        <p><strong>Name:</strong> ${details.fullName}</p>
-        <p><strong>Contact:</strong> ${details.phone}</p>
-        <p><strong>Email:</strong> ${details.email}</p>
-        <p><strong>Center:</strong> ${details.center}</p>
-        <p><strong>Vaccine:</strong> ${details.vaccineType}</p>
-        <p><strong>Date:</strong> ${details.date}</p>
-        <p><strong>Time:</strong> ${details.timeSlot}</p>
+        <div class="review-group">
+            <h4>Personal Information</h4>
+            <p><strong>Name:</strong> ${form.fullName.value}</p>
+            <p><strong>Date of Birth:</strong> ${form.dateOfBirth.value}</p>
+            <p><strong>Gender:</strong> ${form.gender.value}</p>
+            <p><strong>Phone:</strong> ${form.phone.value}</p>
+            <p><strong>Email:</strong> ${form.email.value}</p>
+            <p><strong>Address:</strong> ${form.address.value}</p>
+        </div>
+        <div class="review-group">
+            <h4>Medical History</h4>
+            <p><strong>Previous COVID-19 Vaccination:</strong> ${form.previousVaccine.value}</p>
+            <p><strong>Preferred Vaccine:</strong> ${form.vaccineType.value}</p>
+            <p><strong>Allergies:</strong> ${form.allergies.value === 'yes' ? 'Yes - ' + form.allergyDetails.value : 'No'}</p>
+            <p><strong>Medical Conditions:</strong> ${form.conditions.value === 'yes' ? 'Yes - ' + form.conditionDetails.value : 'No'}</p>
+            <p><strong>Pregnancy/Breastfeeding:</strong> ${form.pregnancy.value}</p>
+            <p><strong>COVID-19 Symptoms:</strong> ${form.symptoms.value === 'yes' ? 'Yes - ' + form.symptomDetails.value : 'No'}</p>
+        </div>
+        <div class="review-group">
+            <h4>Appointment Details</h4>
+            <p><strong>Date:</strong> ${form.date.value}</p>
+            <p><strong>Time:</strong> ${form.timeSlot.value}</p>
+            <p><strong>Location:</strong> ${form.center.value}</p>
+            <p><strong>Reminder Method:</strong> ${form.reminderMethod.value}</p>
+            <p><strong>Assistance Required:</strong> ${form.assistance.value === 'yes' ? 'Yes - ' + form.assistanceDetails.value : 'No'}</p>
+        </div>
     `;
 
     document.getElementById('review-details').innerHTML = reviewHtml;
@@ -324,5 +349,56 @@ document.querySelectorAll('.form-group input, .form-group select').forEach(input
         if (errorMessage) {
             errorMessage.remove();
         }
+    });
+});
+
+// Add event listeners for conditional fields
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle allergies conditional field
+    const allergyRadios = document.querySelectorAll('input[name="allergies"]');
+    const allergyDetails = document.querySelector('textarea[name="allergyDetails"]');
+    allergyRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            allergyDetails.style.display = this.value === 'yes' ? 'block' : 'none';
+            allergyDetails.required = this.value === 'yes';
+        });
+    });
+
+    // Handle medical conditions conditional field
+    const conditionRadios = document.querySelectorAll('input[name="conditions"]');
+    const conditionDetails = document.querySelector('textarea[name="conditionDetails"]');
+    conditionRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            conditionDetails.style.display = this.value === 'yes' ? 'block' : 'none';
+            conditionDetails.required = this.value === 'yes';
+        });
+    });
+
+    // Handle COVID symptoms conditional field
+    const symptomRadios = document.querySelectorAll('input[name="symptoms"]');
+    const symptomDetails = document.querySelector('textarea[name="symptomDetails"]');
+    symptomRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            symptomDetails.style.display = this.value === 'yes' ? 'block' : 'none';
+            symptomDetails.required = this.value === 'yes';
+        });
+    });
+
+    // Handle assistance conditional field
+    const assistanceRadios = document.querySelectorAll('input[name="assistance"]');
+    const assistanceDetails = document.querySelector('textarea[name="assistanceDetails"]');
+    assistanceRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            assistanceDetails.style.display = this.value === 'yes' ? 'block' : 'none';
+            assistanceDetails.required = this.value === 'yes';
+        });
+    });
+
+    // Handle other vaccine type
+    const vaccineSelect = document.querySelector('select[name="vaccineType"]');
+    const otherVaccine = document.querySelector('input[name="otherVaccine"]');
+    vaccineSelect.addEventListener('change', function() {
+        otherVaccine.style.display = this.value === 'other' ? 'block' : 'none';
+        otherVaccine.required = this.value === 'other';
     });
 });

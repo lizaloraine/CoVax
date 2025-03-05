@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash, check_password_hash
+import re
 
 app = Flask(__name__)
 app.secret_key = "secret123"  # Used for session handling
@@ -19,6 +21,9 @@ TIME_SLOT_LIMIT = 5  # Maximum patients per time slot
 
 # Track appointment slots
 appointment_slots = {}  # Format: {'YYYY-MM-DD': {'time': count}}
+
+# Add healthcare worker model
+healthcare_workers = {}  # In production, use a database
 
 @app.route("/get-available-slots/<date>")
 def get_available_slots(date):
@@ -177,42 +182,169 @@ def manage_requests():
 
     return render_template("requests_form.html")
 
+@app.route("/approve-appointment", methods=["POST"])
+def approve_appointment():
+    if "user" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+    
+    data = request.get_json()
+    appointment_no = data.get("appointment_no")
+    
+    # Find the appointment
+    appointment = next((a for a in appointments if a["appointment_no"] == appointment_no), None)
+    
+    if not appointment:
+        return jsonify({"success": False, "message": "Appointment not found"})
+    
+    if appointment["status"] != "Pending":
+        return jsonify({"success": False, "message": "Can only approve pending appointments"})
+    
+    # Update appointment status
+    appointment["status"] = "Confirmed"
+    return jsonify({"success": True})
+
+@app.route("/cancel-appointment", methods=["POST"])
+def cancel_appointment():
+    if "user" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+    
+    data = request.get_json()
+    appointment_no = data.get("appointment_no")
+    
+    # Find the appointment
+    appointment = next((a for a in appointments if a["appointment_no"] == appointment_no), None)
+    
+    if not appointment:
+        return jsonify({"success": False, "message": "Appointment not found"})
+    
+    if appointment["status"] == "Cancelled":
+        return jsonify({"success": False, "message": "Appointment is already cancelled"})
+    
+    # Update appointment status
+    appointment["status"] = "Cancelled"
+    return jsonify({"success": True})
+
+@app.route("/get-appointment/<appointment_no>")
+def get_appointment(appointment_no):
+    if "user" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+    
+    # Find the appointment
+    appointment = next((a for a in appointments if a["appointment_no"] == appointment_no), None)
+    
+    if not appointment:
+        return jsonify({"success": False, "message": "Appointment not found"})
+    
+    # Format the appointment data
+    formatted_appointment = {
+        "appointment_no": appointment["appointment_no"],
+        "patient_name": appointment["patient_name"],
+        "phone": appointment.get("phone", "N/A"),  # Use get() to handle missing fields
+        "center": appointment["center"],
+        "date": appointment["date"],
+        "time": appointment["time"],
+        "vaccine_type": appointment["vaccine_type"],
+        "status": appointment["status"]
+    }
+    
+    return jsonify({
+        "success": True,
+        "appointment": formatted_appointment
+    })
+
 @app.route("/")
 def landing():
-    return render_template("landing.html")
+    # Get user data if logged in
+    user_data = None
+    if "user" in session:
+        user_email = session["user"]
+        user_data = healthcare_workers.get(user_email, {})
+        fullname = user_data.get("fullname", user_email)
+    
+    return render_template("landing.html", 
+                         is_logged_in="user" in session,
+                         user=fullname if "user" in session else None)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
+        email = request.form["email"]
         password = request.form["password"]
 
-        if username in users and users[username] == password:
-            session["user"] = username
+        if email in healthcare_workers and \
+           check_password_hash(healthcare_workers[email]["password"], password):
+            session["user"] = email
             return redirect(url_for("home"))
         else:
-            return render_template("login.html", error="Invalid credentials. Try again.")
+            return render_template("login.html", 
+                error="Invalid email or password")
 
     return render_template("login.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form["username"]
+        fullname = request.form["fullname"]
+        facility = request.form["facility"]
+        license = request.form["license"]
+        email = request.form["email"]
         password = request.form["password"]
+        confirm_password = request.form["confirm-password"]
 
-        if username in users:
-            return render_template("register.html", error="Username already exists.")
-        else:
-            users[username] = password
-            return redirect(url_for("login"))
+        # Basic validation
+        if not re.match(r"^\d{4}-\d{4}$", license):
+            return render_template("register.html", 
+                error="Invalid license number format")
+
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            return render_template("register.html", 
+                error="Invalid email address")
+
+        if password != confirm_password:
+            return render_template("register.html", 
+                error="Passwords do not match")
+
+        if email in healthcare_workers:
+            return render_template("register.html", 
+                error="Email already registered")
+
+        # Create new healthcare worker account
+        healthcare_workers[email] = {
+            "fullname": fullname,
+            "facility": facility,
+            "license": license,
+            "password": generate_password_hash(password),
+            "is_admin": True
+        }
+
+        session["user"] = email
+        return redirect(url_for("home"))
 
     return render_template("register.html")
+
+@app.route("/forgot-password")
+def forgot_password():
+    # Implement password recovery logic
+    return "Password recovery functionality coming soon"
 
 @app.route("/home")
 def home():
     if "user" in session:
-        return render_template("home.html", user=session["user"])
+        # Get the healthcare worker's full name
+        user_email = session["user"]
+        user_data = healthcare_workers.get(user_email, {})
+        fullname = user_data.get("fullname", user_email)  # fallback to email if fullname not found
+        
+        stats = {
+            'total': len(appointments),
+            'pending': sum(1 for a in appointments if a['status'] == 'Pending'),
+            'confirmed': sum(1 for a in appointments if a['status'] == 'Confirmed'),
+            'cancelled': sum(1 for a in appointments if a['status'] == 'Cancelled')
+        }
+        return render_template("home.html", 
+                             user=fullname,  # Pass fullname instead of email
+                             stats=stats,
+                             current_date=datetime.now().strftime("%B %d, %Y"))
     return redirect(url_for("login"))
 
 @app.route("/appointment")

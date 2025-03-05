@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - CoVax</title>
+    <title>Healthcare Worker Registration - CoVax</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <a href="{{ url_for('landing') }}" class="back-btn">
+    <a href="{{ url_for('login') }}" class="back-btn">
         <i class="fas fa-arrow-left"></i>
     </a>
     <div class="register-container">
         <div class="register-header">
-            <h1>Create Account</h1>
-            <p>Join CoVax vaccination system</p>
+            <h1>Healthcare Worker Registration</h1>
+            <p>Create your admin account</p>
         </div>
 
         {% if error %}
@@ -23,20 +23,44 @@
         </div>
         {% endif %}
 
-        <form method="POST" action="{{ url_for('register') }}">
+        <form method="POST" action="{{ url_for('register') }}" id="registrationForm">
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" name="fullname" required>
+            </div>
+
+            <div class="form-group">
+                <label for="facility">Healthcare Facility Name</label>
+                <input type="text" id="facility" name="facility" required>
+            </div>
+
+            <div class="form-group">
+                <label for="license">License Number</label>
+                <input type="text" id="license" name="license" required 
+                       pattern="[0-9]{4}-[0-9]{4}" 
+                       title="Please enter a valid license number (Format: XXXX-XXXX)">
+                <small class="helper-text">Format: XXXX-XXXX</small>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <div class="password-input">
+                    <input type="password" id="password" name="password" required>
+                    <i class="fas fa-eye toggle-password"></i>
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="confirm-password" required>
+                <div class="password-input">
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                    <i class="fas fa-eye toggle-password"></i>
+                </div>
             </div>
 
             <button type="submit" class="register-btn">Create Account</button>
@@ -46,5 +70,7 @@
             Already have an account? <a href="{{ url_for('login') }}">Login here</a>
         </div>
     </div>
+
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 </body>
 </html>
