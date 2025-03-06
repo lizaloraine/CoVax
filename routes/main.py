@@ -7,7 +7,6 @@ main_bp = Blueprint("main", __name__)
 
 @main_bp.route("/")
 def landing():
-    # Get user data if logged in
     user_data = None
     fullname = None
 
@@ -22,12 +21,10 @@ def landing():
 @main_bp.route("/home")
 def home():
     if "user" in session:
-        # Get the healthcare worker's full name
         user_email = session["user"]
         user_data = healthcare_workers.get(user_email, {})
-        fullname = user_data.get("fullname", user_email)  # fallback to email if fullname not found
+        fullname = user_data.get("fullname", user_email)  
         
-         # ✅ FIX: Use dot notation instead of dictionary indexing
         stats = {
             "total": len(appointments),
             "pending": sum(1 for a in appointments if isinstance(a, Appointment) and a.status == "Pending"),
@@ -36,7 +33,7 @@ def home():
         }
 
         return render_template("home.html", 
-                             user=fullname,  # Pass fullname instead of email
+                             user=fullname, 
                              stats=stats,
                              current_date=datetime.now().strftime("%B %d, %Y"))
     return redirect(url_for("auth.login"))

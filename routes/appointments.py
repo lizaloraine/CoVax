@@ -14,13 +14,13 @@ def get_available_slots(date):
         '11:00 AM', '11:30 AM', '02:00 PM', '02:30 PM',
         '03:00 PM', '03:30 PM', '04:00 PM'
     ]
-
+ 
     available_slots = [
         {"time": slot, "remaining": Config.TIME_SLOT_LIMIT - appointment_slots.get(date, {}).get(slot, 0)}
         for slot in all_slots
         if System.check_availability(appointment_slots, date, slot, Config.DAILY_LIMIT, Config.TIME_SLOT_LIMIT)
     ]
-
+ 
     return jsonify({
         "available_slots": available_slots,
         "daily_remaining": Config.DAILY_LIMIT - daily_count

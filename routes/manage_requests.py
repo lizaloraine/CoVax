@@ -13,7 +13,6 @@ def manage_requests():
         verification_code = data.get("verificationCode")
         action = data.get("action") 
 
-        # Find the appointment
         appointment = next((appt for appt in appointments if appt["appointment_no"] == ref_no), None)
 
         if not appointment:
@@ -43,7 +42,7 @@ def manage_requests():
         censored_name = censor_name(appointment["patient_name"])
 
         if action == "check_status":
-            # Return appointment details
+
             return jsonify({
                 "success": True,
                 "appointment": {
@@ -55,7 +54,7 @@ def manage_requests():
                 }
             })
         elif action == "cancel_request":
-            # Check if the cancellation is within 24 hours
+           
             if appointment_datetime - current_datetime <= timedelta(hours=24):
                 return jsonify({"success": False, "message": "Cannot cancel the appointment within 24 hours of the scheduled time"})
             

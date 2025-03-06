@@ -13,22 +13,15 @@ def login():
         password = request.form["password"]
 
         if email in healthcare_workers:
-            worker = healthcare_workers[email]  # Get stored user data
+            worker = healthcare_workers[email]  
             stored_hash = worker["password"]
 
-            print(f"🔍 Stored Hash: {stored_hash}") 
-            print(f"🔑 Entered Password: {password}")  
-            print(f"✅ Check against entered password: {check_password_hash(stored_hash, password)}")  
 
-            # Correct way to compare passwords
             if check_password_hash(stored_hash, password):  
-                print("✅ Password Matched! Logging in...")
                 session["user"] = email
                 return redirect(url_for("main.home"))
-            
-            print("❌ Password did NOT match!")
 
-        print("❌ Invalid email or password!")
+        print("Invalid email or password!")
         return render_template("login.html", error="Invalid email or password")
 
     return render_template("login.html")
