@@ -7,7 +7,7 @@ CoVax is a vaccination appointment system designed to streamline and manage COVI
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/lizaloraine/CoVax
    ```
 
 2. Navigate to the project folder:
