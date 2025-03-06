@@ -8,11 +8,10 @@ from config import Config
 import os
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)  # Generates a new key each restart (session reset)
+app.secret_key = os.urandom(24) 
 
 app.config.from_object(Config)
 
-# Register Blueprints
 app.register_blueprint(appointments_bp)
 app.register_blueprint(manage_requests_bp)
 app.register_blueprint(manage_appointments_bp)
@@ -24,7 +23,7 @@ def clear_session_on_restart():
     """Clears session only if it hasn't been cleared yet in this session."""
     if not session.get("initialized"):
         session.clear()
-        session["initialized"] = True  # Prevents clearing again
+        session["initialized"] = True 
 
 if __name__ == "__main__":
     app.run(debug=True)
