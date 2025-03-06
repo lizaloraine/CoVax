@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <a href="{{ url_for('login') }}" class="back-btn">
+    <a href="{{ url_for('auth.login') }}" class="back-btn">
         <i class="fas fa-arrow-left"></i>
     </a>
     <div class="register-container">
@@ -23,7 +23,7 @@
         </div>
         {% endif %}
 
-        <form method="POST" action="{{ url_for('register') }}" id="registrationForm">
+        <form method="POST" action="{{ url_for('auth.register') }}" id="registrationForm">
             <div class="form-group">
                 <label for="fullname">Full Name</label>
                 <input type="text" id="fullname" name="fullname" required>
@@ -67,7 +67,7 @@
         </form>
 
         <div class="login-link">
-            Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+            Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>
         </div>
     </div>
 

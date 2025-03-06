@@ -13,14 +13,14 @@
         <!-- Replace sidebar with navbar -->
         <nav class="navbar">
             <div class="nav-brand">
-                <a href="{{ url_for('landing') }}">
+                <a href="{{ url_for('main.landing') }}">
                     <h2>CoVax</h2>
                 </a>
             </div>
             <ul class="nav-links">
-                <li><a href="{{ url_for('home') }}" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="{{ url_for('appointment') }}"><i class="fas fa-calendar"></i> Appointments</a></li>
-                <li><a href="{{ url_for('logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li><a href="{{ url_for('main.home') }}" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('manage_appointments.appointment') }}"><i class="fas fa-calendar"></i> Appointments</a></li>
+                <li><a href="{{ url_for('auth.logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
 

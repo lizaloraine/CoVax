@@ -14,16 +14,16 @@
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#why-vaccinate">Why Vaccinate</a></li>
+            <li><a href="#why-vaccinate">Why Get Vaccinated?</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
         <ul class="nav-login-right">
             {% if is_logged_in %}
                 <li><span class="welcome-text">Welcome, Dr. {{ user }}</span></li>
-                <li><a href="{{ url_for('home') }}" class="dashboard-btn">Dashboard</a></li>
-                <li><a href="{{ url_for('logout') }}" class="logout-btn">Logout</a></li>
+                <li><a href="{{ url_for('main.home') }}" class="dashboard-btn">Dashboard</a></li>
+                <li><a href="{{ url_for('auth.logout') }}" class="logout-btn">Logout</a></li>
             {% else %}
-                <li><a href="{{ url_for('login') }}" class="login-btn">Healthcare Worker Login</a></li>
+                <li><a href="{{ url_for('auth.login') }}" class="login-btn">Healthcare Worker Login</a></li>
             {% endif %}
         </ul>
     </nav>
@@ -37,11 +37,11 @@
                 <h1>Get Vaccinated, Stay Protected!</h1>
                 <p>Book your COVID-19 vaccination appointment in just 4 simple steps.</p>
                 <div class="buttons">
-                    <a href="{{ url_for('new_appointment') }}" class="btn primary">
+                    <a href="{{ url_for('appointments.new_appointment') }}" class="btn primary">
                         <span class="material-symbols-rounded">event</span>
                         Book an Appointment
                     </a>
-                    <a href="{{ url_for('manage_requests') }}" class="btn secondary">
+                    <a href="{{ url_for('manage_requests.manage_requests') }}" class="btn secondary">
                         <span class="material-symbols-rounded">schedule</span>
                         Check Appointment Status
                     </a>
