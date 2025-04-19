@@ -28,3 +28,10 @@ class Appointment:
     def __getitem__(self, key):
         """Allows dictionary-style access (appointment['status'])"""
         return getattr(self, key, None)
+    
+    def __setitem__(self, key, value):
+        """Allows dictionary-style assignment (appointment['status'] = 'Cancelled')"""
+        if hasattr(self, key):
+            setattr(self, key, value)
+        else:
+            raise KeyError(f"'{key}' is not a valid attribute of Appointment.")
